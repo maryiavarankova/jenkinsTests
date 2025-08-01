@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using FluentAssertions;
+using OpenQA.Selenium.Support.UI;
 
 namespace JenkinsTests
 {
@@ -19,7 +20,7 @@ namespace JenkinsTests
             options.AddArgument($"--user-data-dir={Path.GetTempPath()}chrome_user_data_dir_{Guid.NewGuid()}");
 
             // Optional: Run without GUI (headless)
-            options.AddArgument("--headless");
+            //options.AddArgument("--headless");
             options.AddArgument("--disable-gpu");
             options.AddArgument("--no-sandbox");
             driver = new ChromeDriver(options);
@@ -31,6 +32,12 @@ namespace JenkinsTests
         public void JenkinsTest1()
         {
             driver.Navigate().GoToUrl("https://www.epam.com/");
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            var dynamicElement = wait.Until(driver =>
+            {
+                return driver.FindElement(By.XPath("//a[contains(@class, 'top-navigation__item-link') and contains(., 'Careers')]")).Displayed;
+            });
+
             driver.FindElement(By.XPath("//a[contains(@class, 'top-navigation__item-link') and contains(., 'Careers')]")).Click();
             driver.FindElement(By.Id("new_form_job_search-keyword")).Displayed.Should().BeTrue();
         }
