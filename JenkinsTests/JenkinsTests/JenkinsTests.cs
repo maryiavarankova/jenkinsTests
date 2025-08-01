@@ -26,5 +26,11 @@ namespace JenkinsTests
             driver.FindElement(By.Id("new_form_job_search-keyword")).Displayed.Should().BeTrue();
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            driver.Close();
+            driver.Quit();
+        }
     }
 }
