@@ -13,7 +13,9 @@ namespace JenkinsTests
         [SetUp]
         public void SetUp()
         {
-            driver = new ChromeDriver();
+            var options = new ChromeOptions();
+            options.AddArgument($"--user-data-dir={Path.GetTempPath()}chrome_user_data_dir_{Guid.NewGuid()}");
+            driver = new ChromeDriver(options);
             driver.Manage().Window.Maximize();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
         }
@@ -29,8 +31,11 @@ namespace JenkinsTests
         [TearDown]
         public void TearDown()
         {
-            driver.Close();
-            driver.Quit();
+            if (driver != null)
+            {
+                driver.Quit();
+                driver.Dispose();
+            }
         }
     }
 }
